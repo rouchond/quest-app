@@ -1,18 +1,37 @@
 from config import db
 
-class Quest(db.Model):
+class Goal(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    quest_name = db.Column(db.String(80), unique=True, nullable=False)
-    quest_data = db.Column(db.String(280), unique=False, nullable=True)
+    goal_name = db.Column(db.String(80), unique=True, nullable=False)
+    goal_desc = db.Column(db.String(280), nullable=True)
+    goal_color = db.Column(db.String(7), default="#F0F3F5")
+    
+    milestones = db.relationship("Milestone", backref="goal")
 
+class Milestone(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    milestone_name = db.Column(db.String(80), unique=True, nullable=False)
+    milestone_desc = db.Column(db.String(280), nullable=True)
+    milestone_color = db.Column(db.String(7), default="#F0F3F5")
+
+    goal_id = db.Column(db.Integer, db.ForiegnKey("goal.id"))
+
+    achievements = db.relationship("Achievements", backref="milestone")
 
 class Achievement(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     achievement_name = db.Column(db.String(80), unique=True, nullable=False)
-    achievement_data = db.Column(db.String(280), unique=False, nullable=True)
+    achievement_desc = db.Column(db.String(280), nullable=True)
+    achievement_color = db.Column(db.String(7), defualt="#F0F3F5")
+
+    milestone_id = db.Column(db.Integer, db.ForiegnKey("milestone.id"))
+
+    tasks = db.relationship("Tasks", backref="achievement")
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     task_name = db.Column(db.String(80), unique=True, nullable=False)
-    task_data = db.Column(db.String(280), unique=False, nullable=True)
+    task_desc = db.Column(db.String(280), nullable=True)
+    task_color = db.Column(db.String(7), default="#F0F3F5")
     
+    achievement_id = db.Column(db.Integer, db.ForeignKey("achievement.id"))
