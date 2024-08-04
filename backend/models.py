@@ -14,7 +14,7 @@ class Milestone(db.Model):
     milestone_desc = db.Column(db.String(280), nullable=True)
     milestone_color = db.Column(db.String(7), default="#F0F3F5")
 
-    goal_id = db.Column(db.Integer, db.ForiegnKey("goal.id"))
+    goal_id = db.Column(db.Integer, db.ForeignKey("goal.id"))
 
     achievements = db.relationship("Achievements", backref="milestone")
 
@@ -22,9 +22,9 @@ class Achievement(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     achievement_name = db.Column(db.String(80), unique=True, nullable=False)
     achievement_desc = db.Column(db.String(280), nullable=True)
-    achievement_color = db.Column(db.String(7), defualt="#F0F3F5")
+    achievement_color = db.Column(db.String(7), default="#F0F3F5")
 
-    milestone_id = db.Column(db.Integer, db.ForiegnKey("milestone.id"))
+    milestone_id = db.Column(db.Integer, db.ForeignKey("milestone.id"))
 
     tasks = db.relationship("Tasks", backref="achievement")
 
