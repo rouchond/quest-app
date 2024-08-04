@@ -8,6 +8,14 @@ class Goal(db.Model):
     
     milestones = db.relationship("Milestone", backref="goal")
 
+    def to_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "desc": self.desc,
+            "color": self.color
+        }
+
 class Milestone(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     milestone_name = db.Column(db.String(80), unique=True, nullable=False)
@@ -17,6 +25,14 @@ class Milestone(db.Model):
     goal_id = db.Column(db.Integer, db.ForeignKey("goal.id"))
 
     achievements = db.relationship("Achievements", backref="milestone")
+
+    def to_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "desc": self.desc,
+            "color": self.color
+        }
 
 class Achievement(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -28,6 +44,14 @@ class Achievement(db.Model):
 
     tasks = db.relationship("Tasks", backref="achievement")
 
+    def to_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "desc": self.desc,
+            "color": self.color
+        }
+
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     task_name = db.Column(db.String(80), unique=True, nullable=False)
@@ -35,3 +59,11 @@ class Task(db.Model):
     task_color = db.Column(db.String(7), default="#F0F3F5")
     
     achievement_id = db.Column(db.Integer, db.ForeignKey("achievement.id"))
+
+    def to_json(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "desc": self.desc,
+            "color": self.color
+        }
