@@ -57,6 +57,16 @@ def update_goal(goal_id):
 
     return jsonify({"message": "Goal updated."}), 200
 
+@app.route("/delete_goal/<int:goal_id>", methods=["DELETE"])
+def delete_goal(goal_id):
+    goal = db.session.get(Goal, goal_id)
+    if not goal:
+        return jsonify({"message": "Goal not found."}), 404
+    
+    db.session.delete(goal)
+    db.session.commit()
+
+    return jsonify({"message": "Goal deleted."}), 200
 
 if __name__ == "__main__":
     with app.app_context():
