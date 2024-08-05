@@ -14,6 +14,13 @@ def get_goals():
     json_goals = list(map(lambda x: x.to_json(), goals))
     return jsonify({"goals": json_goals})
 
+@app.route("/goals/<int:goal_id>", methods=["GET"])
+def get_goal(goal_id):
+    goal = db.session.get(Goal, goal_id)
+    if not goal:
+        return jsonify({"message": "Goal not found."}), 404
+    return jsonify({"goal": goal.to_json()})
+
 @app.route("/create_goal", methods=["POST"])
 def create_goal():
     name = request.json.get("name")
