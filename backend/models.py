@@ -11,9 +11,9 @@ class Goal(db.Model):
     def to_json(self):
         return {
             "id": self.id,
-            "name": self.name,
-            "desc": self.desc,
-            "color": self.color
+            "name": self.goal_name,
+            "desc": self.goal_desc,
+            "color": self.goal_color
         }
 
 class Milestone(db.Model):
@@ -24,14 +24,14 @@ class Milestone(db.Model):
 
     goal_id = db.Column(db.Integer, db.ForeignKey("goal.id"))
 
-    achievements = db.relationship("Achievements", backref="milestone")
+    achievements = db.relationship("Achievement", backref="milestone")
 
     def to_json(self):
         return {
             "id": self.id,
-            "name": self.name,
-            "desc": self.desc,
-            "color": self.color
+            "name": self.milestone_name,
+            "desc": self.milestone_desc,
+            "color": self.milestone_color
         }
 
 class Achievement(db.Model):
@@ -42,14 +42,14 @@ class Achievement(db.Model):
 
     milestone_id = db.Column(db.Integer, db.ForeignKey("milestone.id"))
 
-    tasks = db.relationship("Tasks", backref="achievement")
+    tasks = db.relationship("Task", backref="achievement")
 
     def to_json(self):
         return {
             "id": self.id,
-            "name": self.name,
-            "desc": self.desc,
-            "color": self.color
+            "name": self.achievement_name,
+            "desc": self.achievement_desc,
+            "color": self.achievement_color
         }
 
 class Task(db.Model):
@@ -63,7 +63,7 @@ class Task(db.Model):
     def to_json(self):
         return {
             "id": self.id,
-            "name": self.name,
-            "desc": self.desc,
-            "color": self.color
+            "name": self.task_name,
+            "desc": self.task_desc,
+            "color": self.task_color
         }
