@@ -41,6 +41,23 @@ def create_goal():
     
     return jsonify({"message": "Goal Created"}), 201
 
+@app.route("/update_goal/<int:goal_id>", methods=["PUT"])
+def update_goal(goal_id):
+    goal = db.session.get(Goal, goal_id)
+    if not goal:
+        return jsonify({"message": "Goal not found."}), 404
+    
+    data = request.json
+
+    goal.goal_name  = data.get("name", goal.goal_name)
+    goal.goal_desc  = data.get("desc", goal.goal_desc)
+    goal.goal_color  = data.get("color", goal.goal_color)
+
+    db.session.commit()
+
+    return jsonify({"message": "Goal updated."}), 200
+
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
