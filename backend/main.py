@@ -198,6 +198,70 @@ def delete_achievement(achievement_id):
     return jsonify({"message": "Achievement deleted"})
 
 
+#####
+##### Task Routes
+#####
+
+@app.route("/tasks", methods=["GET"])
+def get_tasks():
+    task = Task.query.all()
+    json_task = list(map(lambda x: x.to_json(), task))
+    return jsonify({"tasks": json_task})
+
+@app.route("/tasks/<int:task_id>", methods=["GET"])
+def get_task(task_id):
+    task = db.session.get(Task, task_id)
+    if not task:
+        return jsonify({"message": "Task not found"}), 404
+    
+    return jsonify({"Task": task.to_json()})
+
+@app.route("/create_task", methods=["POST"])
+def create_task():
+    name = request.json.get("name")
+    desc = request.json.get("desc")
+    color = request.json.get("color")
+
+    if not name:
+        return jsonify({"message": "You must include a name"}), 400
+    
+    new_task = Task(task_name=name, task_desc=desc, task_color=color)
+    try:
+        db.session.add(new_task)
+        db.session.commit()
+    except Exception as e:
+        return jsonify({"message": str(e)}), 400
+    
+    return jsonify({"message": "Task Created"}), 201
+
+
+@app.route("/update_task/<int:task_id>", methods=["PUT"])
+def update_task(task_id):
+    task = db.session.get(Task, task_id)
+    if not task:
+        return jsonify({"task": "Task not found"}), 404
+    
+    data = request.json
+
+    task.task_name = data.get("name", task.task_name)
+    task.task_desc = data.get("desc", task.task_desc)
+    task.task_color = data.get("color", task.task_color)
+
+    db.session.commit()
+    return jsonify({"message": "Updated Task"})
+
+
+@app.route("/delete_task/<int:task_id>", methods=["DELETE"])
+def delete_task(task_id):
+    task = db.session.get(Task, task_id)
+    if not task:
+        return jsonify({"message": "Task not found"}), 404
+    
+    db.session.delete(task)
+    db.session.commit()
+    return jsonify({"message": "Task deleted"})
+
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
