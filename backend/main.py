@@ -1,12 +1,15 @@
 from flask import request, jsonify
 from config import app, db
-from models import Goal, Milestone
+from models import Goal, Milestone, Achievement, Task
 
 
 @app.route("/")
 def hello():
     return "<h1>Hello World</h1>"
 
+#####
+##### Goal Routes
+#####
 
 @app.route("/goals", methods=["GET"])
 def get_goals():
@@ -68,6 +71,10 @@ def delete_goal(goal_id):
 
     return jsonify({"message": "Goal deleted."}), 200
 
+#####
+##### Milestone Routes
+#####
+
 @app.route("/milestones", methods=["GET"])
 def get_milestones():
     milestones = Milestone.query.all()
@@ -126,6 +133,70 @@ def delete_milestone(milestone_id):
     db.session.delete(milestone)
     db.session.commit()
     return jsonify({"message": "Milestone deleted"})
+
+#####
+##### Achievement Routes
+#####
+
+@app.route("/achievements", methods=["GET"])
+def get_achievements():
+    achievement = Achievement.query.all()
+    json_achievements = list(map(lambda x: x.to_json(), achievement))
+    return jsonify({"achievements": json_achievements})
+
+@app.route("/achievements/<int:achievement_id>", methods=["GET"])
+def get_achievement(achievement_id):
+    achievement = db.session.get(Achievement, achievement_id)
+    if not achievement:
+        return jsonify({"message": "Achievement not found"}), 404
+    
+    return jsonify({"milestone": achievement.to_json()})
+
+@app.route("/create_achievement", methods=["POST"])
+def create_achievement():
+    name = request.json.get("name")
+    desc = request.json.get("desc")
+    color = request.json.get("color")
+
+    if not name:
+        return jsonify({"message": "You must include a name"}), 400
+    
+    new_achievement = Achievement(achievement_name=name, achievement_desc=desc, achievement_color=color)
+    try:
+        db.session.add(new_achievement)
+        db.session.commit()
+    except Exception as e:
+        return jsonify({"message": str(e)}), 400
+    
+    return jsonify({"message": "Achievement Created"}), 201
+
+
+@app.route("/update_achievement/<int:achievement_id>", methods=["PUT"])
+def update_achievement(achievement_id):
+    achievement = db.session.get(Achievement, achievement_id)
+    if not achievement:
+        return jsonify({"achievement": "Achievement not found"}), 404
+    
+    data = request.json
+
+    achievement.achievement_name = data.get("name", achievement.achievement_name)
+    achievement.achievement_desc = data.get("desc", achievement.achievement_desc)
+    achievement.achievement_color = data.get("color", achievement.achievement_color)
+
+    db.session.commit()
+    return jsonify({"message": "Updated Achievement"})
+
+
+@app.route("/delete_achievement/<int:achievement_id>", methods=["DELETE"])
+def delete_achievement(achievement_id):
+    achievement = db.session.get(Achievement, achievement_id)
+    if not achievement:
+        return jsonify({"message": "Achievement not found"}), 404
+    
+    db.session.delete(achievement)
+    db.session.commit()
+    return jsonify({"message": "Achievement deleted"})
+
 
 if __name__ == "__main__":
     with app.app_context():
