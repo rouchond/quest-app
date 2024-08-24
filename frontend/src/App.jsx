@@ -1,10 +1,10 @@
-import AddQuest from './AddQuest.jsx'
+import AddGoal from './AddGoal.jsx'
 
 function App() {
 
   return (
     <>
-      <AddQuest/>
+      <AddGoal/>
     </>
   )
 }
