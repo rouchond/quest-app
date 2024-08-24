@@ -1,8 +1,7 @@
-// Note: Need to fix update button in goal form. 
-
 import React, {useState, useEffect} from 'react'
 
 import GoalForm from './GoalForm.jsx'
+import GoalsList from './GoalsList.jsx';
 
 import {BASE_URL} from '../../keys.js'
 
@@ -44,7 +43,10 @@ function AddGoal(){
 
     return(
         <>
-
+            <GoalsList goals={goals}
+            updateGoal={openEditModal}
+            updateCallBack={onUpdate}
+            />
 
             <button onClick={openCreateModal}>Add Goal</button>
             {isModalOpen && <div className="modal">

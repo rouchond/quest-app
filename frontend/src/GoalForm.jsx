@@ -1,5 +1,3 @@
-// Note: updating isn't working properly
-
 import React, {useState} from 'react'
 import {BASE_URL} from '../../keys'
 
